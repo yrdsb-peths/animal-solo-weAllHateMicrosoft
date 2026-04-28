@@ -16,12 +16,12 @@ public class MyWorld extends World {
         
         //Create the elephant object
         Elephant elephant = new Elephant();
-        addObject(elephant, 300, 370);
+        addObject(elephant, 300, 350);
         
         //Create a label
         scoreLabel = new Label(0,50);
         addObject(scoreLabel, 50, 50);
-        createApple();
+        createDurian();
     }
     
     /**
@@ -36,11 +36,11 @@ public class MyWorld extends World {
     /**
      * Creates a new apple at random location at top of screen
      */
-    public void createApple(){
-        Apple apple = new Apple();
+    public void createDurian(){
+        Durian durian = new Durian();
         int x = Greenfoot.getRandomNumber(600);
         int y = Greenfoot.getRandomNumber(300);
-        addObject(apple, x, y);
+        addObject(durian, x, y);
     }
     
     /**
