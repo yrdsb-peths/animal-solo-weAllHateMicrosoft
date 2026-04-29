@@ -8,7 +8,10 @@ import greenfoot.*;
  */
 public class MyWorld extends World {
     public int score = 0;
+    private int level = 3;
+    private int maxLevel = 14;
     Label scoreLabel;
+    
     
     public MyWorld() {
         //Creates a new world with 600*400 cells with a cell size of 1x1 pixels
@@ -31,6 +34,14 @@ public class MyWorld extends World {
     {
         score ++;
         scoreLabel.setValue(score);
+        
+        if(score % 1 == 0)
+        {
+            if (level <= maxLevel)
+            {
+                level += 1;
+            }
+        }
     }
     
     /**
@@ -38,8 +49,32 @@ public class MyWorld extends World {
      */
     public void createDurian(){
         Durian durian = new Durian();
-        int x = Greenfoot.getRandomNumber(600);
-        int y = Greenfoot.getRandomNumber(300);
+        int durianSpeed = level;
+        durian.setSpeed(durianSpeed); 
+        
+        int elephantX = getObjects(Elephant.class).get(0).getX();
+        int fallFrames = 370 / durianSpeed;
+        int reactionFrames = 15;//1/4 seconds 
+        // Frames the player actually has to move the elephant
+        int availableFrames = Math.max(0, fallFrames - reactionFrames);
+        
+        int elephantSpeed = getObjects(Elephant.class).get(0).getSpeed();
+        int maxTravelDistance = availableFrames * elephantSpeed;
+        int hitboxTolerance = 65;   
+        
+        // The absolute maximum distance the durian can spawn from the elephant
+        int maxDistance = maxTravelDistance + hitboxTolerance;
+        //Calculate safe spawn boundaries
+        int minX = Math.max(0, elephantX - maxDistance);
+        int maxX = Math.min(600, elephantX + maxDistance);
+        // Safety fallback just in case the math ever overlaps perfectly
+        if (maxX <= minX) {
+            maxX = minX + 1;
+        }
+        
+        //Spawn the Durian within the calculated safe zone
+        int x = minX + Greenfoot.getRandomNumber(maxX - minX);
+        int y = 30;
         addObject(durian, x, y);
     }
     
@@ -51,6 +86,7 @@ public class MyWorld extends World {
         Label gameOverLabel = new Label("Game Over",100);
         addObject(gameOverLabel, 300,200);
     }
+    
 }
 
 

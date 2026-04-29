@@ -16,7 +16,7 @@ public class Elephant extends Actor
     private GreenfootSound elephantSound = new GreenfootSound("elephant.wav");
     private GreenfootImage[] idleLeft = new GreenfootImage[8];
     private GreenfootImage[] idleRight = new GreenfootImage[8];
-    private int speed = 8;
+    private int speed = 14;
     private boolean facingLeft = false;
     SimpleTimer animationTimer = new SimpleTimer();
     
@@ -96,5 +96,10 @@ public class Elephant extends Actor
             }
             elephantSound.play();
         }
+    }
+    
+    public int getSpeed()
+    {
+        return speed;
     }
 }
