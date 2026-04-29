@@ -9,7 +9,7 @@ import greenfoot.*;
 public class MyWorld extends World {
     public int score = 0;
     private int level = 3;
-    private int maxLevel = 14;
+    private int maxLevel = 12;
     Label scoreLabel;
     
     
@@ -35,7 +35,7 @@ public class MyWorld extends World {
         score ++;
         scoreLabel.setValue(score);
         
-        if(score % 1 == 0)
+        if(score % 5 == 0)
         {
             if (level <= maxLevel)
             {
