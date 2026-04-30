@@ -4,7 +4,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * Elephant the elephant is the most elephantine elephant an elephant has seen, he is also our hero the player controls. All hail the elephatine elephant, elephant.
  * 
  * @author Arron
- * @version April 27, 2026
+ * @version April 30, 2026
  */
 public class Elephant extends Actor
 {
@@ -19,6 +19,7 @@ public class Elephant extends Actor
     private int speed = 14;
     private boolean facingLeft = false;
     SimpleTimer animationTimer = new SimpleTimer();
+    private boolean isDead = false; 
     
     /*
      * Consturctor of elephant
@@ -55,19 +56,26 @@ public class Elephant extends Actor
             return;
         }
         animationTimer.mark();
-        if (facingLeft)
-        {
-            setImage(idleLeft[imageIndex%8]);
+        
+        GreenfootImage baseFrame = facingLeft ? idleLeft[imageIndex%8] : idleRight[imageIndex%8];//Turn left or right
+        GreenfootImage fatFrame = new GreenfootImage(baseFrame); //Make a copy of the frame
+        
+        int extraFat = 0;
+        if (getWorld() instanceof MyWorld) {
+            int currentScore = ((MyWorld)getWorld()).score;
+            extraFat = Math.min(120, currentScore * 4);  // Grows 4 pixels wider per durian, max 200 pixels wide
         }
-        else
-        {
-            setImage(idleRight[imageIndex%8]);
-        }
+        
+        fatFrame.scale(80 + extraFat, 80);
+        setImage(fatFrame); 
         imageIndex++;
     }
     
     public void act()
     {
+        if (isDead) {
+            return; 
+        }
         animateElephant();
         if(Greenfoot.isKeyDown("left")){
             move(-speed);
@@ -80,6 +88,8 @@ public class Elephant extends Actor
         
         // Remove DURIAN if elephant eats it 
         eat();
+        //Get killed if crashes into a hazard
+        checkHazard();
     }
     
     public void eat()
@@ -95,6 +105,36 @@ public class Elephant extends Actor
                 elephantSound.stop();
             }
             elephantSound.play();
+        }
+    }
+    
+        
+    public void checkHazard()
+    {
+        Roadroller roller = (Roadroller) getOneIntersectingObject(Roadroller.class);
+        if(roller != null)
+        {
+            isDead = true; 
+            
+            // 1. Get the current width (so we keep the "fatness" from the score)
+            int currentWidth = getImage().getWidth();
+            
+            // 2. Create the squashed image
+            GreenfootImage squashedImg = new GreenfootImage(getImage());
+            
+            // 3. Scale it: Width = current fatness + 30px splatter, Height = 15px flat
+            squashedImg.scale(currentWidth + 30, 15); 
+            setImage(squashedImg);
+    
+            // 4. Move the actor down so it stays on the ground
+            // Since height goes from 80 to 15, we move down by roughly 32 pixels
+            setLocation(getX(), getY() + 32);
+     
+            // 5. Tell the roller to land on us
+            roller.smash(this);
+            
+            MyWorld world = (MyWorld) getWorld();
+            world.gameOver();
         }
     }
     

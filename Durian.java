@@ -27,6 +27,9 @@ public class Durian extends Actor
         if(getWorld() instanceof TitleScreen)
         {
             bounceLogic();
+            if (getWorld() == null) {
+                return; 
+            }
             checkDurianCollision();
         }
         if(getWorld() instanceof MyWorld)
@@ -48,6 +51,10 @@ public class Durian extends Actor
     
     private void bounceLogic()
     {
+        if (Greenfoot.mouseClicked(this)) {
+            getWorld().removeObject(this);
+            return; 
+        }
         setLocation(getX() + dx, getY() + dy);
 
         if (getX() <= 0 || getX() >= getWorld().getWidth() - 1) {
