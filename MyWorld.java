@@ -29,7 +29,9 @@ public class MyWorld extends World {
     
     public void act() {
         // If the game is over and the user presses space, go back to TitleScreen
-        if (isGameOver && Greenfoot.isKeyDown("space")) {
+        String key = Greenfoot.getKey(); 
+        
+        if (isGameOver && "space".equals(key)) {
             TitleScreen titleWorld = new TitleScreen();
             Greenfoot.setWorld(titleWorld);
         }
@@ -77,7 +79,7 @@ public class MyWorld extends World {
         addObject(durian, durianX, 30);
     
         // 2. CHANCE to spawn an EXTRA Roadroller hazard
-        if (Greenfoot.getRandomNumber(100) < 5) { 
+        if (Greenfoot.getRandomNumber(100) < 30) { 
             Roadroller roller = new Roadroller();
             roller.setSpeed(durianSpeed + 1); // Make it slightly faster/dangerous
             
@@ -99,6 +101,7 @@ public class MyWorld extends World {
      */
     public void gameOver()
     {
+        isGameOver = true; 
         String insult = "";
         
         if (score == 0)      insult = "Did you even touch the keyboard?";

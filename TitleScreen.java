@@ -27,8 +27,11 @@ public class TitleScreen extends World
      */
     public void act()
     {
-        //Start the game if user presses the space bar
-        if(Greenfoot.isKeyDown("space"))
+        // Capture the key press event
+        String key = Greenfoot.getKey();
+        
+        // Start the game if user presses the space bar
+        if("space".equals(key))
         {
             MyWorld gameWorld = new MyWorld();
             Greenfoot.setWorld(gameWorld);

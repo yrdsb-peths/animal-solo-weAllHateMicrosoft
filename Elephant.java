@@ -14,6 +14,7 @@ public class Elephant extends Actor
      */
     
     private GreenfootSound elephantSound = new GreenfootSound("elephant.wav");
+    private GreenfootSound juiceSound = new GreenfootSound("juice.mp3");
     private GreenfootImage[] idleLeft = new GreenfootImage[8];
     private GreenfootImage[] idleRight = new GreenfootImage[8];
     private int speed = 14;
@@ -133,6 +134,14 @@ public class Elephant extends Actor
             // 5. Tell the roller to land on us
             roller.smash(this);
             
+            for (int i = 0; i < 50; i++) 
+            {
+                // Spawn blood drops slightly above the squashed body
+                getWorld().addObject(new Tomato(), getX(), getY() - 10);
+            }
+            
+            // 6. Sounds and Game Over
+            juiceSound.play();
             MyWorld world = (MyWorld) getWorld();
             world.gameOver();
         }
