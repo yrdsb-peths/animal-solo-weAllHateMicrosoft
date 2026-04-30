@@ -11,23 +11,25 @@ public class MyWorld extends World {
    private int level = 3;
    int maxLevel = 12;
    Label scoreLabel;
-   private boolean isGameOver = false;    
-    
+   private boolean isGameOver = false;   
+   public GreenfootSound bgm = new GreenfootSound("bgm.mp3");
+   
    public MyWorld() {
-    //Creates a new world with 600*400 cells with a cell size of 1x1 pixels
-    super(600, 400, 1, false);
+        //Creates a new world with 600*400 cells with a cell size of 1x1 pixels
+        super(600, 400, 1, false);
+        bgm.setVolume(50);
+        bgm.playLoop();
+        //Create the elephant object
+        Elephant elephant = new Elephant();
+        addObject(elephant, 300, 350);
+        
+        //Create a label
+        scoreLabel = new Label(0,50);
+        addObject(scoreLabel, 50, 50);
+        createDurian();
+   }
     
-    //Create the elephant object
-    Elephant elephant = new Elephant();
-    addObject(elephant, 300, 350);
-    
-    //Create a label
-    scoreLabel = new Label(0,50);
-    addObject(scoreLabel, 50, 50);
-    createDurian();
-    }
-    
-    public void act() {
+   public void act() {
         // If the game is over and the user presses space, go back to TitleScreen
         String key = Greenfoot.getKey(); 
         
@@ -35,7 +37,7 @@ public class MyWorld extends World {
             TitleScreen titleWorld = new TitleScreen();
             Greenfoot.setWorld(titleWorld);
         }
-    }
+   }
     
     /**
      * Increase score
@@ -79,7 +81,7 @@ public class MyWorld extends World {
         addObject(durian, durianX, 30);
     
         // 2. CHANCE to spawn an EXTRA Roadroller hazard
-        if (Greenfoot.getRandomNumber(100) < 30) { 
+        if (Greenfoot.getRandomNumber(100) < 90) { 
             Roadroller roller = new Roadroller();
             roller.setSpeed(durianSpeed + 1); // Make it slightly faster/dangerous
             
@@ -101,6 +103,7 @@ public class MyWorld extends World {
      */
     public void gameOver()
     {
+        bgm.stop();
         isGameOver = true; 
         String insult = "";
         
@@ -121,6 +124,7 @@ public class MyWorld extends World {
         Label restartLabel = new Label("Press space for Menu",40);
         addObject(restartLabel, 300,300);
     }
+    
 }
 
 

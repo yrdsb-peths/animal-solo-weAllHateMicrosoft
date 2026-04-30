@@ -110,39 +110,54 @@ public class Elephant extends Actor
     }
     
         
-    public void checkHazard()
-    {
+    public void checkHazard() {
         Roadroller roller = (Roadroller) getOneIntersectingObject(Roadroller.class);
-        if(roller != null)
-        {
-            isDead = true; 
+        if(roller != null && !isDead) {
+            isDead = true;
+            MyWorld world = (MyWorld) getWorld();
+            world.bgm.stop();
+
+            // --- FIXING THE RECTANGLE: Make it a Splatter ---
+            int w = getImage().getWidth() + 100;
+            int h = 40;
+            GreenfootImage deadImg = new GreenfootImage(w, h);
             
-            // 1. Get the current width (so we keep the "fatness" from the score)
-            int currentWidth = getImage().getWidth();
+            // Draw a dark red base puddle (irregular)
+            deadImg.setColor(new Color(100, 0, 0)); 
+            deadImg.fillOval(10, 15, w - 20, 20);
             
-            // 2. Create the squashed image
-            GreenfootImage squashedImg = new GreenfootImage(getImage());
-            
-            // 3. Scale it: Width = current fatness + 30px splatter, Height = 15px flat
-            squashedImg.scale(currentWidth + 30, 15); 
-            setImage(squashedImg);
-    
-            // 4. Move the actor down so it stays on the ground
-            // Since height goes from 80 to 15, we move down by roughly 32 pixels
-            setLocation(getX(), getY() + 32);
-     
-            // 5. Tell the roller to land on us
-            roller.smash(this);
-            
-            for (int i = 0; i < 50; i++) 
-            {
-                // Spawn blood drops slightly above the squashed body
-                getWorld().addObject(new Tomato(), getX(), getY() - 10);
+            // Add some brighter red "blobs" on top
+            deadImg.setColor(new Color(170, 0, 0));
+            for(int i = 0; i < 5; i++) {
+                int rx = Greenfoot.getRandomNumber(w - 40);
+                int ry = 10 + Greenfoot.getRandomNumber(15);
+                deadImg.fillOval(rx, ry, 30, 15);
             }
             
-            // 6. Sounds and Game Over
+            // Scatter the bones (Off-white, smaller, irregular)
+            deadImg.setColor(new Color(230, 230, 230));
+            for(int i = 0; i < 8; i++) {
+                int bx = Greenfoot.getRandomNumber(w - 20);
+                int by = 15 + Greenfoot.getRandomNumber(10);
+                deadImg.fillOval(bx, by, 8, 4); // Smaller bone chunks
+            }
+            
+            setImage(deadImg);
+            setLocation(getX(), getY() + 35);
+            roller.smash(this);
+
+            // Spawning Gore particles
+            for (int i = 0; i < 40; i++) {
+                world.addObject(new Tomato(), getX(), getY());
+                if(i % 3 == 0) world.addObject(new Debris(0), getX(), getY());
+                if(i % 4 == 0) world.addObject(new Debris(1), getX(), getY());
+                if(i % 10 == 0) world.addObject(new Debris(2), getX(), getY());
+            }
+
+            world.addObject(new Eyeball(), getX(), getY());
+            world.addObject(new Eyeball(), getX()+5, getY());
             juiceSound.play();
-            MyWorld world = (MyWorld) getWorld();
+            //world.triggerShake(50);
             world.gameOver();
         }
     }
